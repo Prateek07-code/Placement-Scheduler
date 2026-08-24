@@ -1,0 +1,36 @@
+company_id,name,tier,day,cgpa_cutoff,target_shortlist_size,panels,interview_duration_min,priority_tier
+C001,Aurex Global,Tier1,1,6.18,173,5,20,1
+C002,Pinnacle Robotics,Tier1,1,6.1,160,5,15,1
+C003,Bluewave Systems,Tier1,1,6.47,73,7,20,2
+C004,Voltaire Energy,Tier1,1,6.05,64,5,15,1
+C005,Hexon Semiconductors,Tier1,1,6.41,102,6,20,2
+C006,Zenith Financial Tech,Tier1,1,6.4,97,7,15,2
+C007,Tessellate Games,Tier1,1,6.3,104,8,15,1
+C008,Crestline Pharma,Tier1,1,6.03,74,8,20,1
+C009,Vantage Softworks,Tier2,2,7.51,45,3,30,4
+C010,Meridian Labs,Tier2,2,6.97,42,4,30,3
+C011,Kinetic Motors,Tier2,2,7.2,27,2,25,4
+C012,Ironleaf Tech,Tier2,2,7.56,47,3,30,4
+C013,Delta Forge,Tier2,2,7.02,53,2,25,3
+C014,Lumen Research Labs,Tier2,2,7.55,57,2,25,4
+C015,Stratos Analytics,Tier2,2,7.31,55,3,30,4
+C016,Sable Data Systems,Tier2,2,6.9,36,2,20,3
+C017,Marrow Biotech,Tier2,2,6.99,32,4,25,3
+C018,Pathfinder Aerospace,Tier2,3,6.98,25,4,25,3
+C019,Infratek,Tier2,3,6.97,34,2,25,3
+C020,Cognify,Tier2,3,7.09,42,4,25,3
+C021,Wavelength Telecom,Tier2,3,7.53,37,2,30,4
+C022,Cerulean AI,Tier2,3,7.52,56,4,30,4
+C023,Northbridge Consulting,Tier2,3,7.31,41,3,25,4
+C024,Nimbus Cloud,Tier2,3,7.35,45,3,20,4
+C025,Obsidian Defense Systems,Tier2,3,7.57,56,3,20,4
+C026,Solace Networks,Tier2,3,7.1,51,2,20,3
+C027,Redshift Systems,Tier3,3,8.31,27,2,30,5
+C028,Cobalt Retail Tech,Tier3,3,8.14,32,2,30,5
+C029,Fernwood Logistics,Tier3,3,8.33,50,1,30,5
+C030,Anvil Cybersecurity,Tier3,3,7.97,53,2,30,5
+C031,Ridgeline Capital,Tier3,4,8.09,37,2,30,5
+C032,Quantiva,Tier3,4,8.44,34,2,45,5
+C033,Granite Infra,Tier3,4,8.09,36,2,45,5
+C034,Orbit Digital,Tier3,4,8.06,16,1,40,5
+C035,Halcyon Health Informatics,Tier3,4,7.83,47,2,40,4
