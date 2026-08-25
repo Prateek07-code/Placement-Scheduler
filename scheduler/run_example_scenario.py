@@ -23,8 +23,8 @@ from db import store
 from scheduler.core import run_scheduler
 from scheduler.replan import replan
 
-DB_PATH = "/home/claude/placement_scheduler/scheduler.db"
-DATA_DIR = "/home/claude/placement_scheduler/data"
+DB_PATH = "scheduler.db"
+DATA_DIR = "data"
 
 
 def print_diff(diff, label):

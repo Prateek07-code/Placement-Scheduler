@@ -214,7 +214,7 @@ def gen_rooms(rng, n=NUM_ROOMS):
     return df, unavail_df
 
 
-def main(seed=42, outdir="/home/claude/placement_scheduler/data"):
+def main(seed=42, outdir="data"):
     rng = np.random.default_rng(seed)
     outdir = Path(outdir)
     outdir.mkdir(parents=True, exist_ok=True)
@@ -238,7 +238,7 @@ def main(seed=42, outdir="/home/claude/placement_scheduler/data"):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=42)
-    ap.add_argument("--outdir", type=str, default="/home/claude/placement_scheduler/data")
+    ap.add_argument("--outdir", type=str, default="data")
     args = ap.parse_args()
     main(seed=args.seed, outdir=args.outdir)
     print("Data generated.")

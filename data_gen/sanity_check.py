@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 
-DATA = Path("/home/claude/placement_scheduler/data")
+DATA = Path("data")
 
 students = pd.read_csv(DATA / "students.csv")
 companies = pd.read_csv(DATA / "companies.csv")

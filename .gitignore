@@ -22,6 +22,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.pyc
 
 # Virtual Environment
 .venv/
@@ -34,6 +35,7 @@ htmlcov/
 # Databases & local state
 *.db
 *.sqlite3
+*.db-journal
 
 # IDEs & OS
 .vscode/

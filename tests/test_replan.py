@@ -205,3 +205,110 @@ def test_churn_fields_present_and_sane(conn):
     assert "churn_count" in diff and "churn_ratio" in diff
     assert diff["churn_count"] == len(diff["moved"]) + len(diff["bumped"])
     assert 0.0 <= diff["churn_ratio"] <= 1.0
+
+
+# ---------- Gaps found via coverage analysis (Phase 6) ----------
+
+def test_room_unavailable_disrupts_the_owning_company(conn):
+    """handle_room_unavailable had ZERO coverage before this test. It should
+    behave identically to a panel_dropout on whichever company/panel owned
+    that room -- this proves the delegation actually happens, not just that
+    the function doesn't crash."""
+    sched = store.get_schedule_df(conn, day=1)
+    row = sched.iloc[0]
+    room_id, cid, panel_num = row.room_id, row.company_id, row.panel_num
+
+    before_other_panels = sched[(sched.company_id == cid) & (sched.panel_num != panel_num)]
+    before_snapshot = set(zip(before_other_panels.interview_id, before_other_panels.room_id,
+                               before_other_panels.start_min))
+
+    diff = replan(conn, [{"type": "room_unavailable", "room_id": room_id, "day": 1}], commit=True)
+
+    assert diff["moved"] or diff["bumped"], \
+        "room_unavailable produced no changes -- delegation to panel_dropout may not be firing"
+
+    unavail = pd.read_sql_query(
+        "SELECT * FROM room_unavailability WHERE room_id=? AND day=1", conn, params=(room_id,)
+    )
+    assert not unavail.empty, "Room was not recorded in room_unavailability after the disruption"
+
+    after = store.get_schedule_df(conn, day=1)
+    after_other = after[(after.company_id == cid) & (after.panel_num != panel_num)
+                         & (after.interview_id.isin(before_other_panels.interview_id))]
+    after_snapshot = set(zip(after_other.interview_id, after_other.room_id, after_other.start_min))
+    assert before_snapshot == after_snapshot, "room_unavailable disturbed a different, unaffected panel"
+
+    assert (after.room_id == room_id).sum() == 0, "An interview is still scheduled in the unavailable room"
+
+
+def test_room_unavailable_on_an_idle_room_is_a_safe_noop(conn):
+    """A room nobody was using should return None from the handler and
+    change nothing except the audit record -- exercises the 'row is None'
+    branch specifically. Day 1 has zero idle rooms in this dataset (fully
+    saturated), so this deliberately uses Day 4, independently confirmed to
+    run under full room capacity (Phase 2 finding: panels, not rooms, bind
+    that day)."""
+    sched = store.get_schedule_df(conn, day=4)
+    all_rooms = set(store.get_rooms(conn).room_id)
+    used_rooms = set(sched.room_id)
+    idle_rooms = all_rooms - used_rooms
+    assert idle_rooms, "Day 4 was expected to have idle rooms based on Phase 2's utilization finding"
+    idle_room = next(iter(idle_rooms))
+
+    before = store.get_schedule_df(conn, day=4)
+    diff = replan(conn, [{"type": "room_unavailable", "room_id": idle_room, "day": 4}], commit=True)
+
+    assert not diff["moved"] and not diff["bumped"] and not diff["backfilled"], \
+        "Disrupting an idle room should not change any interview"
+    after = store.get_schedule_df(conn, day=4)
+    assert len(before) == len(after)
+
+
+def test_orphan_successfully_moved_lands_in_a_conflict_free_slot(conn):
+    """The 'moved' success branch had ZERO coverage before this test -- every
+    prior test happened to hit a fully-packed company where everything got
+    bumped instead. This finds a company with genuine slack and proves
+    relocation actually works, not just that bumping works."""
+    sched = store.get_schedule_df(conn)
+    unsched = store.get_unscheduled_df(conn)
+    fully_served = sched.groupby("company_id").size().index.difference(set(unsched.company_id))
+    assert len(fully_served) > 0, "No fully-served company in this dataset to test slack-based relocation with"
+
+    for cid in fully_served:
+        day = int(sched[sched.company_id == cid].day.iloc[0])
+        diff = replan(conn, [{"type": "company_late", "company_id": cid, "day": day, "hours_late": 1}],
+                      commit=False)
+        if diff["moved"]:
+            break
+    else:
+        pytest.skip("No fully-served company in this dataset produced a 'moved' interview at 1hr late")
+
+    m = diff["moved"][0]
+    assert m["new"]["room_id"] is not None
+    assert m["new"]["start_min"] >= m["old"]["start_min"] or m["new"]["room_id"] != m["old"]["room_id"], \
+        "Moved interview's new slot is identical to its old slot -- not a real move"
+
+    diff2 = replan(conn, [{"type": "company_late", "company_id": cid, "day": day, "hours_late": 1}],
+                    commit=True)
+    full_sched = store.get_schedule_df(conn)
+    for (rid, d), grp in full_sched.groupby(["room_id", "day"]):
+        ivals = sorted(zip(grp.start_min, grp.end_min))
+        for i in range(len(ivals) - 1):
+            assert ivals[i][1] <= ivals[i + 1][0], f"Room {rid} double-booked after a move on day {d}"
+
+
+def test_churn_warning_actually_fires_above_threshold(conn, monkeypatch):
+    """Line 414 (the churn warning append) had never executed in any test.
+    Rather than manufacture an artificially huge disruption, temporarily
+    lower CHURN_THRESHOLD so any nonzero churn trips it -- this tests the
+    WARNING LOGIC itself, independent of finding a naturally huge scenario."""
+    import scheduler.replan as replan_module
+    monkeypatch.setattr(replan_module, "CHURN_THRESHOLD", 0.0)
+
+    cid = _pick_company_with_slack_and_shortfall(conn, day=1)
+    diff = replan_module.replan(conn, [{"type": "panel_dropout", "company_id": cid, "panel_num": 1, "day": 1}],
+                                 commit=False)
+
+    assert diff["churn_count"] > 0, "Need a nonzero-churn scenario to test the warning against"
+    assert diff["warnings"], "Churn exceeded threshold but no warning was appended"
+    assert "exceeds" in diff["warnings"][0]

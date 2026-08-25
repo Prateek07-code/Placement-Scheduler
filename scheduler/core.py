@@ -224,8 +224,8 @@ def run_scheduler(conn):
 
 
 if __name__ == "__main__":
-    DB_PATH = "/home/claude/placement_scheduler/scheduler.db"
-    DATA_DIR = "/home/claude/placement_scheduler/data"
+    DB_PATH = "scheduler.db"
+    DATA_DIR = "data"
 
     conn = store.get_connection(DB_PATH)
     store.init_schema(conn)
