@@ -36,10 +36,16 @@ streamlit run dashboard/app.py
 **1. Master Schedule View**
 ![Master Schedule](assets/schedule.png)
 
-**2. Replan Engine: Minimal Disturbance Diff**
+**2. Unscheduled Reason Log**
+![Reason Log](assets/unscheduled.png)
+
+**3. Replan Engine: Minimal Disturbance Diff**
 ![Replan Diff](assets/diff.png)
 
-**3. Automated Test Suite**
+**4 Replan Audit History**
+![Audit History](assets/replan_audit.png)
+
+**5. Automated Test Suite**
 ![Pytest Output](assets/tests.png)
 
 ## Defense Write-up
