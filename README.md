@@ -31,6 +31,17 @@ pytest tests/ -v
 streamlit run dashboard/app.py
 ```
 
+## System Screenshots
+
+**1. Master Schedule View**
+![Master Schedule](assets/schedule.png)
+
+**2. Replan Engine: Minimal Disturbance Diff**
+![Replan Diff](assets/diff.png)
+
+**3. Automated Test Suite**
+![Pytest Output](assets/tests.png)
+
 ## Defense Write-up
 The answers to the three architectural defense questions (regarding schedule constraints, graceful degradation, and churn thresholds) can be found in [docs/writeup.md](docs/writeup.md).
 
