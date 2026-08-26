@@ -3,7 +3,7 @@
 A scheduler + replan engine for a 4-day, 35-company,
 800-student, 20-room placement week, with a coordinator dashboard.
 
-**Live demo:** <PASTE STREAMLIT CLOUD URL HERE AFTER DEPLOYING>
+**Live demo:** https://placement-scheduler-2gfgydahcdz9tql5qekbyl.streamlit.app/
 
 ## Architecture
 - `data_gen/` — realistic dataset generator (companies/students/rooms/shortlists)
