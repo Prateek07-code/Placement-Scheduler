@@ -1,6 +1,6 @@
 # Placement Week Scheduler
 
-Take-home assessment: a scheduler + replan engine for a 4-day, 35-company,
+A scheduler + replan engine for a 4-day, 35-company,
 800-student, 20-room placement week, with a coordinator dashboard.
 
 **Live demo:** <PASTE STREAMLIT CLOUD URL HERE AFTER DEPLOYING>
@@ -30,6 +30,9 @@ python3 data_gen/generate.py --seed 42
 pytest tests/ -v
 streamlit run dashboard/app.py
 ```
+
+## Defense Write-up
+The answers to the three architectural defense questions (regarding schedule constraints, graceful degradation, and churn thresholds) can be found in [docs/writeup.md](docs/writeup.md).
 
 ## Known limitations
 See `docs/writeup.md` and the list below for edge cases handled

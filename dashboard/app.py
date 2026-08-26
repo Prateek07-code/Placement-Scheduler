@@ -142,7 +142,7 @@ def render_diff_summary(diff):
 # ---------------------------------------------------------------------------
 
 def main():
-    st.title("🗓️ Mirai Labs Placement Week Operations Center")
+    st.title("🗓️Placement Week Operations Center")
     st.caption("Live Operations Dashboard & Intelligent Local-Repair Replan Engine")
 
     # Sidebar Controls
